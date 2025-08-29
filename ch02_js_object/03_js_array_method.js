@@ -42,7 +42,7 @@ console.log(students);
 // 결과값 : ['김삼', '김사', '김오', '김육']
 let students2 = myStudents.slice(3, 5);
 console.log(students2);
-// 결과값 : ['김삼', '김사', '김오'];
+// 결과값 : ['김사', '김오'];
 // 두 번째 argument는 종료 인덱스 넘버입니다.
 
 // filter()

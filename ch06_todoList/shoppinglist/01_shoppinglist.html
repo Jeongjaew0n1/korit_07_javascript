@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping List</title>
+  <link rel="stylesheet" href="./01_shoppinglist.css">
+</head>
+<body>
+  <div class="todo-container">
+    <h1>My Shopping List</h1>
+    <div class="input-group">
+      <input type="text" id="item-input" placeholder="구매할 물품을 입력하세요">
+      <input type="number" id="price-input" placeholder="가격" min="0">
+      <button id="add-btn">추가</button>
+    </div>
+    <ul id="shopping-list" class="shopping-list">
+      <!-- 쇼핑 리스트 아이템이 추가될 부분 -->
+    </ul>
+  </div>
+  <script>
+    // DOM element 가져오기
+    const itemInput = document.getElementById('item-input');
+    const priceInput = document.getElementById('price-input');
+    const addBtn = document.getElementById('add-btn');
+    const shoppingList = document.getElementById('shopping-list');
+    
+    const shoppingitems = JSON.parse(localStorage.getItem('shopping-items')) || [];
+
+    function renderShoppingList() {
+      shoppingList.innerHTML = '';
+
+      shoppingitems.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.className = 'todo-item';
+        if (item.completed) {
+          li.classList.add('completed');
+        }
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = item.completed;
+
+        const itemTextSpan = document.createElement('span');
+        itemTextSpan.className = 'item-text';
+        itemTextSpan.textContent = item.text;
+
+        const priceSpan = document.createElement('span');
+        priceSpan.className = 'price';
+        // 가격을 모르면 입력 안될 수 있게 해두려고 합니다.
+        priceSpan.textContent = item.price ? `${item.price} 원` : '';
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.innerHTML = '&times';
+
+        li.append(checkbox);
+        li.append(itemTextSpan);
+        li.append(priceSpan);
+        li.append(deleteBtn);
+      
+        checkbox.addEventListener('change', () => {
+          shoppingitems[index].completed = checkbox.checked;
+          li.classList.toggle('completed', checkbox.checked);
+          saveShoppingItems();
+        });
+
+        deleteBtn.addEventListener('click', () => {
+          shoppingitems.splice(index,1);
+          saveShoppingItems();
+          renderShoppingList();
+        });
+      })
+    };
+
+    function saveShoppingItems() {
+      localStorage.setItem('shopping-items', JSON.stringify(shoppingitems));
+    }
+
+    function addShoppingItem() {
+      const itemText = itemInput.value.trim();
+      const itemPrice = priceInput.value.trim();
+      if (itemText === '') {
+        alert('구매할 물품을 입력하세요 !');
+        return;
+      }
+
+      const newShoppingItems = {
+        text: itemText,
+        price: itemPrice,
+        completed: false,
+      };
+
+      shoppingitems.push(newShoppingItems);
+
+      itemInput.value = '';
+      priceInput.value = '';
+
+      renderShoppingList();
+      saveShoppingItems();
+    }
+
+    addBtn.addEventListener('click', addShoppingItem);
+
+    priceInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        addShoppingItem();
+      }
+    });
+    window.onload = renderShoppingList;
+  </script>
+</body>
+</html>
