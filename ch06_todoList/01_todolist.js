@@ -115,13 +115,13 @@ function addTodo() {
   const todoText = todoInput.value.trim();  // trim() 공백 제거 method였습니다.
   if(todoText === '') {
     alert('내용을 입력하세요 !');
-    return;
+    return;   // 메서드를 종료시키겠다는 의미
   }
 
   // input 창에 내용이 있다면 내용이 들어갈 JS 객체 선언
   const newTodo = {
     text: todoText,
-    completed: false,
+    completed: false, // 초기 생성시에 무조건 false로 고정
   };
 
   // todos에 todo를 추가
@@ -130,12 +130,17 @@ function addTodo() {
   // 추가한 이후에 input 태그 내의 내용을 비우는 역할
   todoInput.value = '';
 
-  renderTodos();
-  saveTodos();
+  renderTodos();    // 추가 버튼 누르고 나서 다시 (갱신된) 리스트 가지고 와야 하니까 renderTodos() 함수 호출
+  saveTodos();  // 그리고 localStorage에도 저장해줘야 하니까 saveTodos() 함수 호출
+
+  // 그러면 이제 의문이 생길 수 있는게 아니 어차피 renderTodos()할때 saveTodos()가 필수인 것 같은데 함께 묶어서 쓰면 안되나요
+
+  // method는 method 하나 당 기능 하나라고 생각하셔야합니다.
+  // 모듈화 
 }
 
 // '추가' 버튼 클릭 이벤트
-addBtn.addEventListener('click', addTodo);
+addBtn.addEventListener('click', addTodo);  // button 태그에 onclick 속성입니다 -> 두 번째 argument로 addTodo 함수를 넣었는데, addTodo()가 아니라는 점에도 주목해야한다고 했습니다.
 
 // 엔터 키 입력 이벤트
 todoInput.addEventListener('keydown', (event) => {
